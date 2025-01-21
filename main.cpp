@@ -1,4 +1,11 @@
 #include <iostream>
+#include <vector>
+
+struct symbol_data
+{
+   char symbol;
+   std::vector<int> range;
+};
 
 
 //Populate the 2d array to then print out in main
@@ -8,16 +15,20 @@ void decode(int width, int height, int* headPos, int* dataPos, int* char_vector,
 
 int main(){
     // Read in size parameters
-    std::string size_parameters;
-    std::getline(std::cin, size_parameters);
+    int length;
+    int width;
     
-    std::cout << size_parameters;
+    std::cin >> length;
+    std::cin >> width;
+    
+    
+    std::cout << length << width;
     
     // Read in char and their ranges
+    // Using getline(), .length(), .find(), substr() to cut up the dynamic sized input
     std::string char_parameters;
-    std::getline(std::cin, char_parameters);
-    
-    std::cout << char_parameters;
+    char delim = ',';
+    std::getline(std::cin, char_parameters, delim);
 
     // Read in headPos data
     std::string headPos;
