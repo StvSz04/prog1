@@ -26,9 +26,14 @@ int main(){
     
     std::cout << length << " " << width << std::endl;
     
+    std::string symbolString;
+    std::cin.ignore();
+    std::getline(std::cin, symbolString);
+    std::cout << "symbolString" << symbolString << std::endl;
+    int symbolStringLen = symbolString.length();
     
     // Test symbol data input collection
-    for(int i=0; i < 5; i++){
+    for(int i=0; i < symbolStringLen ; i++){
        
        std::string x;
        std::cin >> x;
@@ -37,7 +42,7 @@ int main(){
            symbolData instance;
            symbolDataVec.push_back(instance);
            instance.symbol = x;
-       }
+       }        
        else if(x == ","){
            symbolData instance;
            symbolDataVec.push_back(instance);
@@ -56,14 +61,6 @@ int main(){
     
  std::cout << "Symbol: " << symbolDataVec.back().symbol << ", Range: " << symbolDataVec.back().range.back() << std::endl;    
  
-    // Read in char and their ranges
-    // Using getline(), .length(), .find(), substr() to cut up the dynamic sized input
-    //std::string charParameters;
-    //std::getline(std::cin, charParameters);
-    //int charParametersLength = charParameters.length();
-    //int location = charParameters.find(",");
-    //std::cout << "CharParameters " << charParameters << std::endl; 
-    //std::cout <<"Comma found at " << location << std::endl;
 
     // Read in headPos data
     std::string headPos;
@@ -79,9 +76,3 @@ int main(){
     std::cout  << "dataPos data " << dataPos << std::endl;
 
 
-
-
-
- 
-    
-}
