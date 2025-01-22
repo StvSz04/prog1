@@ -5,7 +5,7 @@ struct symbolData
 {
     // Fix these data types later
    std::string symbol;
-   std::string range;
+   std::vector<int> range;
 };
 
 std::vector<symbolData> symbolDataVec;
@@ -28,7 +28,7 @@ int main(){
     
     
     // Test symbol data input collection
-    for(int i =0; i < 10; i++){
+    for(int i=0; i < 5; i++){
        
        std::string x;
        std::cin >> x;
@@ -49,12 +49,13 @@ int main(){
        }
        
        else{
-            symbolDataVec.back().range = x;
+            int  y = std::stoi(x);
+            symbolDataVec.back().range.push_back(y);
        }
     }
     
-    std::cout << symbolDataVec[1].symbol << symbolDataVec[1].range << std::endl;
-    
+ std::cout << "Symbol: " << symbolDataVec.back().symbol << ", Range: " << symbolDataVec.back().range.back() << std::endl;    
+ 
     // Read in char and their ranges
     // Using getline(), .length(), .find(), substr() to cut up the dynamic sized input
     //std::string charParameters;
