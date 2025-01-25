@@ -8,19 +8,19 @@ struct symbolData
    std::vector<int> range;
 };
 
-// A vector of type symbolData to store instances of symbolData
-std::vector<symbolData> symbolDataVec;
-// A vector to store headPos data
-std::vector<int> headPosVector;
-// A vector to store dataPos data
-std::vector<int> dataPosVector;
 
 //Populate the 2d array to then print out in main
-void decode(int width, int height, int* headPos, int* dataPos, int* char_vector, int* range_vector){
+void decode(int width, int length, const std::vector<symbolData>& symbolDataVec, const std::vector<int>& headPosVector, const  std::vector<int>& dataPosVector ){
     
 }
 
 int main(){
+    // A vector of type symbolData to store instances of symbolData
+    std::vector<symbolData> symbolDataVector;
+    // A vector to store headPos data
+    std::vector<int> headPosVector;
+    // A vector to store dataPos data
+    std::vector<int> dataPosVector;
    
     int length;// Define an int to hold length
     int width; // Define an int to hold width
@@ -48,7 +48,7 @@ int main(){
        else if(i == 0){
            symbolData instance; // Create a new instance of symbolData
            instance.symbol = x; // Assign the symbol memeber of the instance to x
-           symbolDataVec.push_back(instance); // push the new instance of symbolData to the vector symbolDataVec
+           symbolDataVector.push_back(instance); // push the new instance of symbolData to the vector symbolDataVec
        }        
        
        // If the current char(x) is a comma then execute these lines
@@ -56,7 +56,7 @@ int main(){
            symbolData instance; // Create a new instance of symbolData
            x = symbolString[i + 1]; // Assign x to the next character in the string(symbolString) which will be a letter/symbol
            instance.symbol = x;  // Assign the symbol memeber of the instance to x
-           symbolDataVec.push_back(instance); // push the new instance of symbolData to the vector symbolDataVec
+           symbolDataVector.push_back(instance); // push the new instance of symbolData to the vector symbolDataVec
            i++; // increment index(i) to account for reading in the next character within symbolString
 
            
@@ -85,7 +85,7 @@ int main(){
            // and assign the last instance of symbolData's range to this value
            if(stringToInt != ""){
                int  temp = std::stoi(stringToInt); // Convert stringToInt, using stoi, to and int. Store in a temp var (temp)
-               symbolDataVec.back().range.push_back(temp); // Assign the int value(temp) to the last instance of a symbolData struct's range member in symbolDataVec 
+               symbolDataVector.back().range.push_back(temp); // Assign the int value(temp) to the last instance of a symbolData struct's range member in symbolDataVec 
            }                                                // Last value because a "read" number will always correspond to the last instance of a symbolData struct instance
        }
        
@@ -111,4 +111,8 @@ int main(){
         int num = x - 0;
         dataPosVector.push_back(num);
     }
+    
+    
+    // Call the decode function
+    decode(width, length, symbolDataVector, headPosVector, dataPosVector);
 }
