@@ -10,6 +10,10 @@ struct symbolData
 
 // A vector of type symbolData to store instances of symbolData
 std::vector<symbolData> symbolDataVec;
+// A vector to store headPos data
+std::vector<int> headPosVector;
+// A vector to store dataPos data
+std::vector<int> dataPosVector;
 
 //Populate the 2d array to then print out in main
 void decode(int width, int height, int* headPos, int* dataPos, int* char_vector, int* range_vector){
@@ -89,11 +93,22 @@ int main(){
     }
 
     // Read in headPos data
-    std::string headPos; // Define a string to hold HeadPos data
-    std::cin.ignore();
-    std::getline(std::cin, headPos);
+    std::string headPosData; // Define a string to hold HeadPos data
+    std::getline(std::cin, headPosData);
+    int headPosDataLen = headPosData.length();
+    for(int i = 0; i < headPosDataLen; i++){
+        char x = headPosData[i];
+        int num = x - 0;
+        headPosVector.push_back(num);
+    }
 
     // Read in dataPos data
-    std::string dataPos;
-    std::getline(std::cin, dataPos);
+    std::string dataPosData;
+    std::getline(std::cin, dataPosData);
+    int dataPosDataLen = dataPosData.length();
+    for(int i = 0; i < dataPosDataLen; i++){
+        char x = dataPosData[i];
+        int num = x - 0;
+        dataPosVector.push_back(num);
+    }
 }
