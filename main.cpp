@@ -8,6 +8,7 @@ struct symbolData
    std::vector<int> range;
 };
 
+// A vector of type symbolData(Struct)
 std::vector<symbolData> symbolDataVec;
 
 //Populate the 2d array to then print out in main
@@ -24,55 +25,69 @@ int main(){
     std::cin >> width;
     
     
-    std::cout << length << " " << width << std::endl;
     
     std::string symbolString;
     std::cin.ignore();
     std::getline(std::cin, symbolString);
-    std::cout << "symbolString" << symbolString << std::endl;
     int symbolStringLen = symbolString.length();
     
+    
     // Test symbol data input collection
-    for(int i=0; i < symbolStringLen ; i++){
+    char x;
+    for(int i=0; i < symbolStringLen; i++){
        
-       std::string x;
-       std::cin >> x;
+       x = symbolString[i];
        
-       if(i == 0){
+       if(x == ' '){
+          // Return to for loop
+       }
+       
+       else if(i == 0){
            symbolData instance;
-           symbolDataVec.push_back(instance);
            instance.symbol = x;
+           symbolDataVec.push_back(instance);
        }        
-       else if(x == ","){
+       
+       else if(x == ','){
            symbolData instance;
-           symbolDataVec.push_back(instance);
-           std:: cin >> x;
+           x = symbolString[i + 1];
            instance.symbol = x;
+           symbolDataVec.push_back(instance);
+           i++;
+
            
-           std:: cin >> x;
         
        }
-       
        else{
-            int  y = std::stoi(x);
-            symbolDataVec.back().range.push_back(y);
+           std::string stringToInt = "";
+           while(true){
+               if( x == ' '){
+                    break;
+                }
+                else if(x == ','){
+                    i--;
+                    break;
+                }
+                stringToInt += x;
+                x = symbolString[i + 1];
+                i++;
+           }
+           
+           if(stringToInt != ""){
+               int  y = std::stoi(stringToInt);
+               symbolDataVec.back().range.push_back(y);
+           }
        }
+       
+       
     }
-    
- std::cout << "Symbol: " << symbolDataVec.back().symbol << ", Range: " << symbolDataVec.back().range.back() << std::endl;    
- 
 
     // Read in headPos data
     std::string headPos;
+    std::cin.ignore();
     std::getline(std::cin, headPos);
-    
-    std::cout << "HeadPos data " << headPos << std::endl;
-
 
     // Read in dataPos data
     std::string dataPos;
     std::getline(std::cin, dataPos);
-    
-    std::cout  << "dataPos data " << dataPos << std::endl;
-
-
+}
