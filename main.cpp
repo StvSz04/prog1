@@ -96,23 +96,55 @@ int main(){
     std::string headPosData; // Define a string to hold HeadPos data
     std::getline(std::cin, headPosData);
     int headPosDataLen = headPosData.length();
+    std::string temp; //String to temp hold numbers
+    
     for(int i = 0; i < headPosDataLen; i++){
-        char x = headPosData[i];
-        int num = x - 0;
-        headPosVector.push_back(num);
+        temp = "";
+        x = headPosData[i];
+        while(true){
+            if( x == ' '){
+                break;
+                }
+            else if(i == headPosDataLen){
+                 break;
+             }
+        
+            temp += x;
+            x = headPosData[i + 1];
+            i++;
+                
+        }
+        if(temp != ""){
+            int num = std::stoi(temp);
+            headPosVector.push_back(num);
+        }
     }
 
     // Read in dataPos data
     std::string dataPosData;
     std::getline(std::cin, dataPosData);
     int dataPosDataLen = dataPosData.length();
+    
     for(int i = 0; i < dataPosDataLen; i++){
-        char x = dataPosData[i];
-        int num = x - 0;
-        dataPosVector.push_back(num);
+        temp = "";
+        x = dataPosData[i];
+        
+        while(true){
+            if( x == ' '){
+                 break;
+                }
+            else if(i == dataPosDataLen){
+                 break;
+             }
+            temp += x;
+            x = headPosData[i + 1];
+            i++;
+        }
+        if(temp != ""){
+            int num = std::stoi(temp);
+            dataPosVector.push_back(num);
+        }
     }
-    
-    
     // Call the decode function
     decode(width, length, symbolDataVector, headPosVector, dataPosVector);
 }
