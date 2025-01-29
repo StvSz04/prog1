@@ -18,26 +18,26 @@ struct inputData{
 
 
 //Decode the input data and return the 2d vector containing the ascii values
-std::vector<std::vector<char>> decode(int length, int width, const std::vector<symbolData>& symbolDataVec, const std::vector<int>& headPosVector, const  std::vector<int>& dataPosVector){
-    std::vector<std::vector<char>> outputVector(length, std::vector<char>(width, ' ')); // Create a 2d vector to hold positions of decoded ascii chars
+std::vector<std::vector<char>> decode(inputData &inputDataInstance){
+    std::vector<std::vector<char>> outputVector(inputDataInstance.length, std::vector<char>(inputDataInstance.width, ' ')); // Create a 2d vector to hold positions of decoded ascii chars
     //Loop each row
-    for(int i = 0; i < length; i++){
+    for(int i = 0; i < inputDataInstance.length; i++){
         int range;
         
-        if(i == length - 1){
-            range = dataPosVector.size();
+        if(i == inputDataInstance.length - 1){
+            range = inputDataInstance.dataPosVector.size();
         }
         else{
-            range = headPosVector[i + 1];
+            range = inputDataInstance.headPosVector[i + 1];
         }
         // Loop each necessary index in dataPosVector
-        for(int j= headPosVector[i]; j < range; j++){
+        for(int j= inputDataInstance.headPosVector[i]; j < range; j++){
             //Loop for each symbol
-            for(int y=0; y < symbolDataVec.size(); y++){
+            for(int y=0; y < inputDataInstance.symbolDataVector.size(); y++){
                 //check all ranges for each symbol
-                for(int z=0; z <=symbolDataVec[y].range.size()/2; z++){
-                    if(dataPosVector[j] >= symbolDataVec[y].range[z] && dataPosVector[j] <= symbolDataVec[y].range[z + 1]){
-                        outputVector[i][dataPosVector[j]] = symbolDataVec[y].symbol;
+                for(int z=0; z <= inputDataInstance.symbolDataVector[y].range.size()/2; z++){
+                    if(inputDataInstance.dataPosVector[j] >= inputDataInstance.symbolDataVector[y].range[z] && inputDataInstance.dataPosVector[j] <= inputDataInstance.symbolDataVector[y].range[z + 1]){
+                        outputVector[i][inputDataInstance.dataPosVector[j]] = inputDataInstance.symbolDataVector[y].symbol;
                         z++;
                     }
                 }
@@ -182,7 +182,7 @@ int main(){
     inputDataInstance.dataPosVector = dataPosVector;
     
     // Call the decode function
-    std::vector<std::vector<char>> outputVector =decode(length, width, symbolDataVector, headPosVector, dataPosVector);
+    std::vector<std::vector<char>> outputVector =decode(inputDataInstance);
     //Print 2d vector
     for (int i = 0; i < length; i++) {  // Iterate over rows
         for (int j = 0; j < width; j++) {  // Iterate over columns
