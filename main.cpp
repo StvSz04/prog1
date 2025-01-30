@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <pthread.h>
 
 // Define a struct that holds corresponding symbols and ranges
 struct symbolData{
@@ -8,45 +9,53 @@ struct symbolData{
    std::vector<int> range;
 };
 
-struct inputData{
+struct imageData{
     int length;
     int width; 
     std::vector<symbolData> symbolDataVector; 
     std::vector<int> headPosVector;
     std::vector<int> dataPosVector;
+    std::vector<std::vector<char>> outputVector;
+    
+};
+
+struct threadData {
+    imageData* imageDataInstance;  // Pointer to imageData
+    int row;  // Row index for the current thread
 };
 
 
 //Decode the input data and return the 2d vector containing the ascii values
-std::vector<std::vector<char>> decode(inputData &inputDataInstance){
-    std::vector<std::vector<char>> outputVector(inputDataInstance.length, std::vector<char>(inputDataInstance.width, ' ')); // Create a 2d vector to hold positions of decoded ascii chars
+void* decode(void* arg){
+    threadData* data = static_cast<threadData*>(arg);  // Cast to threadData
+    imageData* imageDataInstance = data->imageDataInstance;  // Get imageData pointer
+    int row = data->row;
+    
+    std::vector<std::vector<char>> outputVector(imageDataInstance->length, std::vector<char>(imageDataInstance->width, ' ')); // Create a 2d vector to hold positions of decoded ascii chars
     //Loop each row
-    for(int i = 0; i < inputDataInstance.length; i++){
         int range;
         
-        if(i == inputDataInstance.length - 1){
-            range = inputDataInstance.dataPosVector.size();
+        if(row == imageDataInstance->length - 1){
+            range = imageDataInstance->dataPosVector.size();
         }
         else{
-            range = inputDataInstance.headPosVector[i + 1];
+            range = imageDataInstance->headPosVector[row  + 1];
         }
         // Loop each necessary index in dataPosVector
-        for(int j= inputDataInstance.headPosVector[i]; j < range; j++){
+        for(int j= imageDataInstance->headPosVector[row ]; j < range; j++){
             //Loop for each symbol
-            for(int y=0; y < inputDataInstance.symbolDataVector.size(); y++){
+            for(int y=0; y < imageDataInstance->symbolDataVector.size(); y++){
                 //check all ranges for each symbol
-                for(int z=0; z <= inputDataInstance.symbolDataVector[y].range.size()/2; z++){
-                    if(inputDataInstance.dataPosVector[j] >= inputDataInstance.symbolDataVector[y].range[z] && inputDataInstance.dataPosVector[j] <= inputDataInstance.symbolDataVector[y].range[z + 1]){
-                        outputVector[i][inputDataInstance.dataPosVector[j]] = inputDataInstance.symbolDataVector[y].symbol;
+                for(int z=0; z <= imageDataInstance->symbolDataVector[y].range.size()/2; z++){
+                    if(imageDataInstance->dataPosVector[j] >= imageDataInstance->symbolDataVector[y].range[z] && imageDataInstance->dataPosVector[j] <= imageDataInstance->symbolDataVector[y].range[z + 1]){
+                        imageDataInstance->outputVector[row ][imageDataInstance->dataPosVector[j]] = imageDataInstance->symbolDataVector[y].symbol;
                         z++;
                     }
                 }
             }
             
         }
-       
-    }
-    return outputVector;
+    pthread_exit(NULL);
 }   
 
 int getSizeParameter(){
@@ -174,21 +183,33 @@ int main(){
     getPosData(dataPosVector);
     
     // Initialize struct of type inputData
-    inputData inputDataInstance;
-    inputDataInstance.width = width;
-    inputDataInstance.length = length;
-    inputDataInstance.symbolDataVector = symbolDataVector;
-    inputDataInstance.headPosVector = headPosVector;
-    inputDataInstance.dataPosVector = dataPosVector;
+    imageData imageDataInstance;
+    imageDataInstance.width = width;
+    imageDataInstance.length = length;
+    imageDataInstance.symbolDataVector = symbolDataVector;
+    imageDataInstance.headPosVector = headPosVector;
+    imageDataInstance.dataPosVector = dataPosVector;
+    imageDataInstance.outputVector = std::vector<std::vector<char>>(length, std::vector<char>(width, ' '));
     
     // Call the decode function
-    std::vector<std::vector<char>> outputVector =decode(inputDataInstance);
+    std::vector<pthread_t> threads(length);
+    for(int i=0; i<imageDataInstance.length; i++){
+        threadData* data = new threadData();
+        data->imageDataInstance = &imageDataInstance;
+        data->row = i;
+        pthread_create(&threads[i],NULL, decode, data);
+    }
+    
+    for(int i = 0; i < length; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
     //Print 2d vector
     for (int i = 0; i < length; i++) {  // Iterate over rows
         for (int j = 0; j < width; j++) {  // Iterate over columns
-            std::cout << outputVector[i][j];  // Print the value at (i, j)
+            std::cout << imageDataInstance.outputVector[i][j];  // Print the value at (i, j)
         }
         std::cout << std::endl;  // Print a newline after each row
     }
-    
+    return 0;
 }
